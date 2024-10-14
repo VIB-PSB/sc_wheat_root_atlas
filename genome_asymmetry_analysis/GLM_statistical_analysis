@@ -1,0 +1,187 @@
+SET [WORKINGDIRECTORY='C:/Users/marni/OneDrive/!PSB/2024/YUJI KE/data']
+
+SPLOAD [REDEFINE=yes] 'alldata.gsh'
+SPLOAD [REDEFINE=yes] 'DESIGN.gsh'
+
+GETATTRIBUTE [nlev,lev,labels] FEATURE, GENE; save = sFeature,sEntry
+\PRINT sFeature[2],sEntry[3]
+
+CALC ROW_NUMBER = MAX(sFeature[1])
+PRINT ROW_NUMBER
+
+"define result matrices"
+TEXT[VALUES = p_INTERACTION] HEADER1
+
+TEXT[VALUES = A_0, B_0, D_0, A_1, B_1, D_1, A_2, B_2, D_2,\
+A_3, B_3, D_3, A_4, B_4, D_4, A_5, B_5, D_5,\
+A_6, B_6, D_6, A_7, B_7, D_7, A_8, B_8, D_8,\
+A_9, B_9, D_9, A_10, B_10, D_10, A_11, B_11, D_11,\
+A_12, B_12, D_12, A_13, B_13, D_13, A_14, B_14, D_14] HEADER2
+
+TEXT[VALUES = se_A_0, se_B_0, se_D_0, se_A_1, se_B_1, se_D_1, se_A_2, se_B_2, se_D_2,\
+se_A_3, se_B_3, se_D_3, se_A_4, se_B_4, se_D_4, se_A_5, se_B_5, se_D_5,\
+se_A_6, se_B_6, se_D_6, se_A_7, se_B_7, se_D_7, se_A_8, se_B_8, se_D_8,\
+se_A_9, se_B_9, se_D_9, se_A_10, se_B_10, se_D_10, se_A_11, se_B_11, se_D_11,\
+se_A_12, se_B_12, se_D_12, se_A_13, se_B_13, se_D_13, se_A_14, se_B_14, se_D_14] HEADER2bis
+
+
+
+TEXT[VALUES = p_CLUSTER,p_SUBGENOME,meanA,meanB,meanD,mean0,mean1,mean2,mean3,mean4,mean5,\
+mean6,mean7,mean8,mean9,mean10,mean11,mean12,mean13,mean14] HEADER3
+
+TEXT[VALUES = se_meanA,se_meanB,se_meanD,se_mean0,se_mean1,se_mean2,se_mean3,se_mean4,se_mean5,\
+se_mean6,se_mean7,se_mean8,se_mean9,se_mean10,se_mean11,se_mean12,se_mean13,se_mean14] HEADER3bis
+
+
+
+TEXT [VALUES = diff_AB, diff_AD, diff_BD, se_AB,se_AD,se_BD,p_AB, p_AD, p_BD] HEADER4
+
+
+TEXT[VALUES = AB_0, AB_1, AB_2,AB_3,AB_4,AB_5,AB_6,AB_7,AB_8,AB_9,AB_10,AB_11,AB_12,AB_13,AB_14,\
+se_AB_0, se_AB_1, se_AB_2,se_AB_3,se_AB_4,se_AB_5,se_AB_6,se_AB_7,se_AB_8,se_AB_9,se_AB_10,se_AB_11,se_AB_12,se_AB_13,se_AB_14,\
+pAB_0, pAB_1, pAB_2,pAB_3,pAB_4,pAB_5,pAB_6,pAB_7,pAB_8,pAB_9,pAB_10,pAB_11,pAB_12,pAB_13,pAB_14] HEADER_AB
+
+TEXT[VALUES = AD_0, AD_1, AD_2,AD_3,AD_4,AD_5,AD_6,AD_7,AD_8,AD_9,AD_10,AD_11,AD_12,AD_13,AD_14,\
+se_AD_0, se_AD_1, se_AD_2,se_AD_3,se_AD_4,se_AD_5,se_AD_6,se_AD_7,se_AD_8,se_AD_9,se_AD_10,se_AD_11,se_AD_12,se_AD_13,se_AD_14,\
+pAD_0, pAD_1, pAD_2,pAD_3,pAD_4,pAD_5,pAD_6,pAD_7,pAD_8,pAD_9,pAD_10,pAD_11,pAD_12,pAD_13,pAD_14] HEADER_AD
+
+TEXT[VALUES = BD_0, BD_1, BD_2,BD_3,BD_4,BD_5,BD_6,BD_7,BD_8,BD_9,BD_10,BD_11,BD_12,BD_13,BD_14,\
+se_BD_0, se_BD_1, se_BD_2,se_BD_3,se_BD_4,se_BD_5,se_BD_6,se_BD_7,se_BD_8,se_BD_9,se_BD_10,se_BD_11,se_BD_12,se_BD_13,se_BD_14,\
+pBD_0, pBD_1, pBD_2,pBD_3,pBD_4,pBD_5,pBD_6,pBD_7,pBD_8,pBD_9,pBD_10,pBD_11,pBD_12,pBD_13,pBD_14] HEADER_BD
+
+TEXT[VALUES = S1,S2,S3,SUBB,SUBD,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18,S19,s20,\
+S21,S22,S23,S24,S25,S26,S27,S28,S29,S30,S31,S32,S33,S34,S35,S36,S37,S38,S39,S40,S41,S42,S43,S44,S45,S46,S47,\
+SP1,SP2,SP3,SPUBB,SPUBD,SP6,SP7,SP8,SP9,SP10,SP11,SP12,SP13,SP14,SP15,SP16,SP17,SP18,SP19,SP20,\
+SP21,SP22,SP23,SP24,SP25,SP26,SP27,SP28,SP29,SP30,SP31,SP32,SP33,SP34,SP35,SP36,SP37,SP38,SP39,\
+SP40,SP41,SP42,SP43,SP44,SP45,SP46,SP47] HEADER_TESTING
+
+
+MATRIX [row= ROW_NUMBER; col = HEADER1] mat_SUBGENOME1
+
+MATRIX [row= ROW_NUMBER; col = HEADER2] mat_SUBGENOME2
+MATRIX [row= ROW_NUMBER; col = HEADER2bis] mat_SUBGENOME2bis
+
+MATRIX [row =ROW_NUMBER; col = HEADER3] mat_SUBGENOME3
+MATRIX [row =ROW_NUMBER; col = HEADER3bis] mat_SUBGENOME3bis
+
+MATRIX [row =ROW_NUMBER; Col = HEADER4] mat_SUBGENOME4
+
+MATRIX [row= ROW_NUMBER; col = HEADER_AB] mat_AB
+MATRIX [row= ROW_NUMBER; col = HEADER_AD] mat_AD
+MATRIX [row =ROW_NUMBER; col = HEADER_BD] mat_BD
+
+MATRIX [row =ROW_NUMBER; col = HEADER_TESTING] mat_PAIRWISE
+
+
+FOR ll = #sFeature['levels'];kk = 1...sFeature['nlevels']
+PRINT ll,kk
+TEXT Clab_kk;VALUE = sEntry['labels']$[ll]
+PRINT Clab_kk
+
+DELETE[REDEFINE = yes] subA
+SUBSET [FEATURE.eq.ll;SETLEVELS = yes] Average;subA
+
+"fitting SUBGENOME*CLUSTER model"
+HGFIXEDMODEL [DISTRIBUTION=poisson; LINK=logarithm; DISPERSION=*; CONSTANT=estimate;\
+ FACT=2] POOL+SUBGENOME*CLUSTER
+HGRANDOMMODEL [DISTRIBUTION=normal; LINK=identity] 
+HGANALYSE [PRINT=model,fixed,random,dispersionest,monitoring,likelihoodstat,wald;\
+ MAXCYCLE=99; TOLERANCE=0.0005; ETOLERANCE=7.5; MLAPLACE=0; DLAPLACE=0] subA
+
+\HGPLOT fitted,normal,histogram,absresidual
+
+DELETE [REDEFINE=yes] pred,se_pred
+HGPREDICT [PRINT=description,predictions,se; COMBINATIONS=estimable; BACKTRANSFORM=link;\
+ ADJUST=marginal; PREDICTIONS=pred; SE=se_pred] CLUSTER,SUBGENOME; LEVELS=*,*
+PRINT pred
+VTABLE pred;vpred
+VTABLE se_pred; vse_pred
+
+"HGLM interaction term test"
+DELETE [REDEFINE=yes] _exit,test,df
+HGFTEST [PRINT=tests; MAXCYCLE=99; EXIT=_exit] SUBGENOME.CLUSTER; TESTSTATISTIC=test; DF=df
+\PRINT test
+DELETE [REDEFINE=yes] Prob
+CALC Prob = CUCHISQUARE(ABS(test);df)
+
+CALC mat_SUBGENOME1$[ll;1] = Prob
+CALC mat_SUBGENOME2$[ll;1...45] = #vpred
+CALC mat_SUBGENOME2bis$[ll;1...45] = #vse_pred
+
+"HGLM pairwise testing to reference"
+
+HGKEEP	ESTIMATES=estimates; SE = se
+CALC nval = NVAL(estimates)
+DELETE [REDEFINE = yes] tvalue
+VARIATE [NVAL = nval] tvalue, _Prob
+CALC tvalue = estimates/se
+DELETE [REDEFINE=yes] _Prob
+CALC _Prob = 1 - (CLT((ABS(tvalue) - 0)/1;88)-CLT((-ABS(tvalue) - 0)/1;88))
+PRINT [IP=*] '  Student''s t Probability outside interval = ',_Prob;F=1;SKIP=0
+\FSPREADSHEET estimates,_Prob
+CALC mat_PAIRWISE$[ll;1...94] = # estimates,#_Prob
+
+\VTCOMPARISON [GROUPS = CLUSTER] Comp[1];ESTIMATE=ABestim; SE = se_AB; PROB = ABprob
+\VTCOMPARISON [GROUPS = CLUSTER] Comp[2];ESTIMATE=ADestim; SE = se_AD; PROB = ADprob
+\VTCOMPARISON [GROUPS = CLUSTER] Comp[3];ESTIMATE=BDestim; SE = se_BD; PROB = BDprob
+
+\CALC mat_AB$[ll;1...45] = #ABestim,#se_AB, #ABprob
+\CALC mat_AD$[ll;1...45] = #ADestim,#se_AD, #ADprob
+\CALC mat_BD$[ll;1...45] = #BDestim,#se_BD, #BDprob
+
+
+"fitting SUBGENOME+CLUSTER model"
+HGFIXEDMODEL [DISTRIBUTION=poisson; LINK=logarithm; DISPERSION=*; CONSTANT=estimate;\
+ FACT=1] POOL+SUBGENOME+CLUSTER
+HGRANDOMMODEL [DISTRIBUTION=normal; LINK=identity] 
+HGANALYSE [PRINT=model,fixed,random,dispersionest,monitoring,likelihoodstat,wald;\
+ MAXCYCLE=99; TOLERANCE=0.0005; ETOLERANCE=7.5; MLAPLACE=0; DLAPLACE=0] subA
+
+DELETE [REDEFINE=yes] pred,se_pred
+HGPREDICT [PRINT=description,predictions,se; COMBINATIONS=estimable; BACKTRANSFORM=link;\
+ ADJUST=marginal; PREDICTIONS=pred; SE=se_pred] SUBGENOME; LEVELS=*
+VTABLE pred;Gpred
+VTABLE se_pred; se_Gpred
+
+DELETE [REDEFINE=yes] pred,se_pred
+HGPREDICT [PRINT=description,predictions,se; COMBINATIONS=estimable; BACKTRANSFORM=link;\
+ ADJUST=marginal; PREDICTIONS=pred; SE=se_pred] CLUSTER; LEVELS=*
+VTABLE pred;Cpred
+VTABLE se_pred; se_Cpred
+
+"HGLM CLUSTER term test"
+DELETE [REDEFINE=yes] _exit,test,df
+HGFTEST [PRINT=tests; MAXCYCLE=99; EXIT=_exit] CLUSTER; TESTSTATISTIC=test; DF=df
+\PRINT test
+DELETE [REDEFINE=yes] C_Prob
+CALC C_Prob = CUCHISQUARE(ABS(test);df)
+
+"HGLM SUBGENOME term test"
+DELETE [REDEFINE=yes] _exit,test,df
+HGFTEST [PRINT=tests; MAXCYCLE=99; EXIT=_exit] SUBGENOME; TESTSTATISTIC=test; DF=df
+\PRINT test
+DELETE [REDEFINE=yes] G_Prob
+CALC G_Prob = CUCHISQUARE(ABS(test);df)
+
+\VTCOMPARISON [PRESENTCOMBINATIONS = SUBGENOME] Comp[1]; ESTIMATE = Testim1; SE = se_Testim1; PROB = Tprob1
+\VTCOMPARISON [PRESENTCOMBINATIONS = SUBGENOME] Comp[2]; ESTIMATE = Testim2; SE = se_Testim2; PROB = Tprob2
+\VTCOMPARISON [PRESENTCOMBINATIONS = SUBGENOME] Comp[3]; ESTIMATE = Testim3; SE = se_Testim3; PROB = Tprob3
+
+CALC mat_SUBGENOME3$[ll;1...20] = C_Prob, G_Prob,#Gpred,#Cpred
+CALC mat_SUBGENOME3bis$[ll;1...18] = #se_Gpred,#se_Cpred
+\CALC mat_SUBGENOME4$[ll;1...9] = Testim1, Testim2,Testim3, se_Testim1, se_Testim2, se_Testim3, Tprob1,Tprob2,Tprob3
+
+
+ENDFOR
+
+FSPREADSHEET sFeature['levels'],sEntry['labels']
+FSPREADSHEET mat_SUBGENOME1
+FSPREADSHEET mat_SUBGENOME2
+FSPREADSHEET mat_SUBGENOME2bis
+FSPREADSHEET mat_SUBGENOME3
+FSPREADSHEET mat_SUBGENOME3bis
+FSPREADSHEET mat_PAIRWISE
+\FSPREADSHEET mat_SUBGENOME4
+\& mat_AB
+\& mat_AD
+\& mat_BD
