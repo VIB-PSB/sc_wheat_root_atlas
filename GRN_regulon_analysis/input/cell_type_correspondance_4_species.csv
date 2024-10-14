@@ -1,0 +1,8 @@
+Tissue;A. thaliana;T. aestivum;O. sativa;Z. mays
+Epidermis;2,13;1,7,8;0,5,9,10,15,19,20;6
+Cortex;6;2;1,4,7,8,11,13;0,4,8
+Endodermis;8,12;9,11;17;5
+Pericycle;0;6;;
+Xylem;7;10;22;3,9
+Phloem;4;11,13;;1
+Root cap;1,10,11;14;21;6
